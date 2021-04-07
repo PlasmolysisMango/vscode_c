@@ -17,11 +17,6 @@ struct CNode
     CList Down, Right; //指向后续结点
 };
 
-int max(int i, int j)
-{
-    return i > j ? i : j;
-}
-
 CList Init(int row, int col)
 {
     CList Ptrl, p;
@@ -65,17 +60,17 @@ void PrintList(CList Ptrl)
     CList p = Ptrl->Right, q;
     for (i = 0; i < Ptrl->Row; i++)
     {
-        q = p->Down;
+        q = p->Right;
         for (j = 0; j < Ptrl->Col; j++)
         {
             if (q != p && q->Row == i && q->Col == j)
             {
-                printf("%.2f ", q->URegion.Value);
-                q = q->Down;
+                printf("%2.1f ", q->URegion.Value);
+                q = q->Right;
             }
             else
             {
-                printf("%d ", 0);
+                printf("%3d ", 0);
             }     
         }
         printf("\n");
@@ -114,35 +109,145 @@ CList Findij(int i, int j, CList Ptrl)
     }
 }
 
-CList Insert(int i, int j, double X, CList Ptrl) //向(i, j)填入X
+void Insert(int i, int j, double X, CList Ptrl) //向(i, j)填入X
 {
-    int ij_max = max(i, j), l = 0;
-    CList p = Ptrl->Right;
-    while (l <= ij_max)
+    int l = 0;
+    CList p = Ptrl->Right, q, term = NULL;
+    if (i >= Ptrl->Row || j >= Ptrl->Col || i < 0 || j < 0)
     {
-        if (p->URegion.Next == Ptrl)
+        printf("插入位置有误！\n");
+        return;
+    }
+    while (p != Ptrl)
+    {
+        if (l == i || l == j)
         {
-            CList newhead = (CList)malloc(sizeof(struct CNode));
-            newhead->Tag = 0;
-            p->URegion.Next = newhead;
-        }
-        if (l == i)
-        {
-
+            if (term == NULL)
+            {
+                // printf("term指针：%p\n", term);
+                term = (CList)malloc(sizeof(struct CNode));
+                term->Row = i;
+                term->Col = j;
+                term->Tag = 1;
+                term->URegion.Value = X;
+            }
+            if (l == i)
+            {
+                q = p;
+                while (1)
+                {
+                    if ((q == p && j < q->Right->Col) || 
+                    (j > q->Col && j < q->Right->Col) || 
+                    (j > q->Col && q->Right == p) || 
+                    (q == p && q->Right == p))
+                    {
+                        term->Right = q->Right;
+                        q->Right = term;
+                        break;
+                    }
+                    q = q->Right;
+                    if (q == p)
+                    {
+                        printf("插入位置有误！\n");
+                        return;
+                    }
+                }
+            }
+            if (l == j)
+            {
+                q = p;
+                while (1)
+                {
+                    if ((q == p && i < q->Down->Row) || 
+                    (i > q->Row && i < q->Down->Row) || 
+                    (i > q->Row && q->Down == p) || 
+                    (q == p && q->Down == p))
+                    {
+                        term->Down = q->Down;
+                        q->Down = term;
+                        break;
+                    }
+                    q = q->Down;
+                    if (q == p)
+                    {
+                        printf("插入位置有误！\n");
+                        return;
+                    }
+                }
+            }
         }
         p = p->URegion.Next;
+        l++;
     }
-    if (ij_max > max(Ptrl->Row, Ptrl->Col))
-    {
-        p->URegion.Next = Ptrl;
-    }
+    Ptrl->URegion.Num++;
+    return;
+}
 
-    return Ptrl;
+void Delete(int i, int j, CList Ptrl)
+{
+    int l = 0;
+    CList p = Ptrl->Right, q, s = NULL;
+    while (p != Ptrl)
+    {
+        if (l == i)
+        {
+            q = p;
+            while (1)
+            {
+                if (q->Right->Col == j)
+                {
+                    s = q->Right;
+                    q->Right = s->Right;
+                    break;
+                }
+                q = q->Right;
+                if (q == p)
+                {
+                    printf("未找到对应元素！\n");
+                    return;
+                }
+            }
+        }
+        if (l == j)
+        {
+            q = p;
+            while (1)
+            {
+                if (q->Down->Row == i)
+                {
+                    s = q->Down;
+                    q->Down = s->Down;
+                    break;
+                }
+                q = q->Right;
+                if (q == p)
+                {
+                    printf("未找到对应元素！\n");
+                    return;
+                }
+            }
+        }
+        p = p->URegion.Next;
+        l++;
+    }
+    if (s)
+    {
+        free(s);
+        Ptrl->URegion.Num--;
+    }
+    return;
 }
 
 int main()
 {
     CList Ptrl = Init(3, 4);
+    // PrintList(Ptrl);
+    Insert(0, 0, 1.2, Ptrl);
+    Insert(0, 1, 2.3, Ptrl);
+    Insert(1, 1, 5.5, Ptrl);
+    Insert(2, 3, 15.5, Ptrl);
+    Delete(2, 3, Ptrl);
     PrintList(Ptrl);
+    printf("Num = %d\n", Ptrl->URegion.Num);
     return 0;
 }
