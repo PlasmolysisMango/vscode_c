@@ -48,3 +48,17 @@ ElementType Pop(Stack S)
         return PopData;
     }
 }
+
+int main()
+{
+    Stack PtrS = CreateStack();
+    for (int i = 0; i < 5; i++)
+    {
+        Push(i + 1, PtrS);
+    }
+    for (int i = 0; i < 5; i++)
+    {
+        printf("%d\n", Pop(PtrS));
+    }
+    return 0;
+}
