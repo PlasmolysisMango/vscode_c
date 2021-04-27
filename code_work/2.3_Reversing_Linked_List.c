@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-//思路：利用堆栈，避免对链表的重复修改。
+/*思路：利用堆栈，避免对链表的重复修改。但此法是在整理链表前直接输出结果的，
+如果给出的链表实际结点小于N，则会导致结果出错。*/
 
 typedef struct ChainNode *Stack;
 typedef struct ChainNode *List;
@@ -23,42 +24,48 @@ Stack CreateStack()
     return S;
 }
 
-void SearchPush(Address A, List L, Stack S)
+Address SearchPush(Address A, List L, Stack S)
 {
     while (L->Link)
     {
         if (A == L->Link->Addr)
         {
             List tmpnode;
+            Address Next;
             tmpnode = L->Link;
+            Next = tmpnode->NextAddr;
             L->Link = tmpnode->Link;
-            L->NextAddr = tmpnode->NextAddr;
             tmpnode->Link = S->Link;
-            tmpnode->NextAddr = S->NextAddr;
             S->Link = tmpnode;
-            S->NextAddr = tmpnode->Addr;
-            return;
+            return Next;
         }
         L = L->Link;
     }
+    return -1;
 }
 
-void PopPrint(Stack S)
+List Search(Address A, List L)
+{
+    while (L->Link)
+    {
+        if (A == L->Link->Addr)
+        {
+            List p;
+            p = L->Link;
+            L->Link = p->Link;
+            return p;
+        }
+        L = L->Link;
+    }
+    return NULL;
+}
+
+Stack Pop(Stack S)
 {
     Stack p;
-    int d;
     p = S->Link;
     S->Link = p->Link;
-    d = p->Data;
-    if (!p->Link)
-    {
-        printf("%05d %d %d\n", p->Addr, p->Data, p->NextAddr);
-    }
-    else
-    {
-        printf("%05d %d %05d\n", p->Addr, p->Data, p->NextAddr);
-    }     
-    free(p);
+    return p;
 }
 
 List ReadList(int N)
@@ -70,39 +77,74 @@ List ReadList(int N)
         newnode = (List)malloc(sizeof(struct ChainNode));
         scanf("%d %d %d", &newnode->Addr, &newnode->Data, &newnode->NextAddr);
         newnode->Link = NULL;
-        newnode->NextAddr = -1;
+        // newnode->NextAddr = -1;
         Rear->Link = newnode;
-        Rear->NextAddr = newnode->Addr;
+        // Rear->NextAddr = newnode->Addr;
         Rear = newnode;
     }
     return L;
 }
 
+void PrintList(List R)
+{
+    while (R->Link)
+    {
+        if (R->Link->NextAddr == -1)
+        {
+            printf("%05d %d %d\n", R->Link->Addr, R->Link->Data, R->Link->NextAddr);
+        }
+        else
+        {
+            printf("%05d %d %05d\n", R->Link->Addr, R->Link->Data, R->Link->NextAddr);
+        }
+        R = R->Link;
+    }
+}
+
 int main()
 {
-    int N, K;
+    int N, K, j = 0;
     Address FAddr;
     List L;
     Stack S;
+    List R, Rear, tmpnode;
+    Rear = R = (List)malloc(sizeof(struct ChainNode));
+    Rear->Link = NULL;
     scanf("%d %d %d", &FAddr, &N, &K);
     L = ReadList(N);
     S = CreateStack();
     while (FAddr != -1)
     {
-        for (int i = 0; i < K; i++)
+        for (int i = 0; i < K; i++, j++)
         {
             if (!L->Link)
             {
                 break;
             }
-            SearchPush(FAddr, L, S);
-            FAddr = S->Link->NextAddr;
+            if (j >= N / K * K)
+            {
+                tmpnode = Search(FAddr, L);
+                FAddr = tmpnode->NextAddr;
+                Rear->Link = tmpnode;
+                Rear->NextAddr = tmpnode->Addr;
+                Rear = tmpnode;
+                Rear->Link = NULL;
+                Rear->NextAddr = -1;
+            }
+            else
+            {
+                FAddr = SearchPush(FAddr, L, S);
+            }    
         }
         while (S->Link)
         {
-            PopPrint(S);
+            tmpnode = Pop(S);
+            Rear->Link = tmpnode;
+            Rear->NextAddr = tmpnode->Addr;
+            Rear = tmpnode;
+            Rear->Link = NULL;
+            Rear->NextAddr = -1;
         }
     }
+    PrintList(R);
 }
-
-
