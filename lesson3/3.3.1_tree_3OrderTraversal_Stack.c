@@ -1,3 +1,4 @@
+// 使用堆栈实现先序、中序、后序的二叉树遍历。
 #include <stdio.h>
 #include <stdlib.h>
 
