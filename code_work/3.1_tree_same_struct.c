@@ -56,16 +56,17 @@ BinTree ReadTree()
 {
     int N, R = 0;
     BinTree A[MAXN];
-    scanf("%d", &N);
+    scanf("%d\n", &N);
     for (int i = 0; i < N; i++)
     {
         A[i] = (BinTree)malloc(sizeof(struct TreeNode));
     }
     for (int i = 0; i < N; i++)
     {
+        printf("%d\n", i);
         R += i;
         char cleft, cright;
-        scanf("\n%c %c %c", &(A[i]->Data), &cleft, &cright); 
+        scanf("%c %c %c\n", &(A[i]->Data), &cleft, &cright); 
         /* scanf在%c会录入转义字符在内的所有字符。*/
         if (cleft != '-')
         {
@@ -89,7 +90,15 @@ BinTree ReadTree()
         }
     }
     // printf("%d", R);
-    return A[R];
+    if (!N)
+    {
+        return NULL;
+    }
+    else
+    {
+        return A[R];
+    }
+    
 }
 
 void InOrderTraversal(BinTree BT)
@@ -201,9 +210,68 @@ void PostOrderTraversal(BinTree BT)
     free(S);
 }
 
+BinTree AvilBTree(BinTree B1, BinTree B2)
+{
+    if (!B1 && B2)
+    {
+        return B2;
+    }
+    if (B1 && !B2)
+    {
+        return B1;
+    }
+    return NULL;
+}
+
+int isSameStruct(BinTree B1, BinTree B2)
+{
+    if (!B1 && !B2)
+    {
+        return 1;
+    }
+    if ((B1 && !B2) || (!B1 && B2))
+    {
+        return 0;
+    }
+    if (B1->Data != B2->Data)
+    {
+        return 0;
+    }
+    if ((!(B1->Left && B1->Right) || !(B2->Left && B2->Right)))
+    {
+        return isSameStruct(AvilBTree(B1->Left, B1->Right), 
+        AvilBTree(B2->Left, B2->Right));
+    }
+    else if (B1->Left->Data == B2->Left->Data)
+    {
+        return (isSameStruct(B1->Left, B2->Left) &&
+                isSameStruct(B1->Right, B2->Right));
+    }
+    else if (B1->Left->Data == B2->Right->Data)
+    {
+        return (isSameStruct(B1->Left, B2->Right) &&
+                isSameStruct(B1->Right, B2->Left));
+    }
+    else
+    {
+        return 0;
+    }
+
+    
+}
+
 int main()
 {
-    BinTree B;
-    B = ReadTree();
-    PostOrderTraversal(B);
+    BinTree B1, B2;
+    B1 = ReadTree();
+    B2 = ReadTree();
+    if (isSameStruct(B1, B2))
+    {
+        printf("Yes\n");
+    }
+    else
+    {
+        printf("No\n");
+    }
+    return 0;
 }
