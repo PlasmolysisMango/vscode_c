@@ -66,7 +66,7 @@ int ReadTree(Tree T[])
 {
     int N, R = 0;
     char cleft, cright;
-    scanf("%d", &N);
+    scanf("%d", &N); //避免写%d\n，这会导致后面必须跟一个非空字符才能继续线程。
     for (int i = 0; i < N; i++)
     {
         // printf("%d", i);
