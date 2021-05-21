@@ -38,6 +38,22 @@ int isFull(MaxHeap H)
     }
 }
 
+int isEmpty(MaxHeap H)
+{
+    if (!H)
+    {
+        return 0;
+    }
+    else if (H->Size == 0)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 void Insert(MaxHeap H, ElementType item)
 {
     int i;
@@ -54,3 +70,43 @@ void Insert(MaxHeap H, ElementType item)
     H->Elements[i] = item;
 }
 
+ElementType DeleteMax(MaxHeap H)
+{
+    int Parent, Child;
+    ElementType MaxItem, temp;
+    if (isEmpty(H))
+    {
+        printf("最大堆已空");
+        return -1;
+    }
+    MaxItem = H->Elements[1];
+    temp = H->Elements[H->Size--];
+    for (Parent = 1; Parent * 2 <= H->Size; Parent = Child)
+    {
+        Child = Parent * 2;
+        if ((Child != H->Size && H->Elements[Child] < H->Elements[Child + 1]))
+        {
+            Child++;
+        }
+        if (temp < H->Elements[Child])
+        {
+            H->Elements[Parent] = H->Elements[Child];
+        }
+        else
+        {
+            break;
+        }
+    }
+    H->Elements[Parent] = temp;
+    return MaxItem;
+}
+
+void PercDown(MaxHeap H, int p)
+{
+    return;
+}
+
+MaxHeap BuildHeap()
+{
+    return;
+}
