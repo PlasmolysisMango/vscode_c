@@ -15,7 +15,7 @@ typedef struct HeapNode
 MaxHeap CreateHeap()
 {
     MaxHeap H = (MaxHeap)malloc(sizeof(struct HeapNode));
-    H->Elements = (ElementType)malloc((MaxSize + 1) * sizeof(ElementType));
+    H->Elements = (ElementType*)malloc((MaxSize + 1) * sizeof(ElementType));
     H->Size = 0;
     H->Capacity = MaxSize;
     H->Elements[0] = MaxData;
@@ -101,12 +101,61 @@ ElementType DeleteMax(MaxHeap H)
     return MaxItem;
 }
 
-void PercDown(MaxHeap H, int p)
+void PercDown(MaxHeap H, int p) //下标为p的根节点对应树的最大堆化
 {
-    return;
+    ElementType temp = H->Elements[p];
+    int Parent, Child;
+    for (Parent = p; Parent * 2 <= H->Size; Parent = Child)
+    {
+        Child = 2 * Parent;
+        if (Child < H->Size && H->Elements[Child] < H->Elements[Child + 1])
+        {
+            Child++;
+        }
+        if (H->Elements[Child] <= temp)
+        {
+            break;
+        }
+        else
+        {
+            H->Elements[Parent] = H->Elements[Child];
+        }
+    }
+    H->Elements[Parent] = temp;
 }
 
-MaxHeap BuildHeap()
+MaxHeap BuildHeap() //输入字符串来建立最大堆
 {
-    return;
+    int N;
+    MaxHeap H = CreateHeap();
+    scanf("%d", &N);
+    while (N--)
+    {
+        scanf("%d", &H->Elements[++H->Size]);
+    }
+    for (int i = H->Size / 2; i > 0; i--)
+    {
+        PercDown(H, i);
+    }
+    return H;
+}
+
+void LevelOrderTraversal(MaxHeap H)
+{
+    for (int i = 1; i <= H->Size; i++)
+    {
+        printf("%d ", H->Elements[i]);
+    }
+    printf("\n");
+}
+
+int main()
+{
+    MaxHeap H = BuildHeap();
+    LevelOrderTraversal(H);
+    Insert(H, 8);
+    LevelOrderTraversal(H);
+    ElementType x = DeleteMax(H);
+    LevelOrderTraversal(H);
+    return 0;
 }
