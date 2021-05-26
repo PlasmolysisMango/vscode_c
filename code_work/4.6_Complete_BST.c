@@ -88,28 +88,55 @@ int LeftSize(int Lenth)
     }
 }
 
-void CBTize(CBTree C, CBTree R, int Start, int End)
+void MakeCBTree(CBTree C, CBTree R, int Start, int End, int Root)
 {
+    // 初始值为C, R, 0, N-1, 0  **N为元素总个数
     int Lenth = End - Start + 1;
+    if (!Lenth)
+    {
+        return;
+    }
     int LeftLenth = LeftSize(Lenth);
-    R->Elements[++R->Size] = C->Elements[LeftLenth + Start];
-    CBTize(C, R, Start, LeftLenth + Start);
-    CBTize(C, R, LeftLenth + Start + 1, End);
+    R->Elements[Root] = C->Elements[LeftLenth + Start];
+    int LeftRoot = Root * 2 + 1, RightRoot = LeftRoot + 1;
+    MakeCBTree(C, R, Start, LeftLenth + Start - 1, LeftRoot);
+    MakeCBTree(C, R, LeftLenth + Start + 1, End, RightRoot);
 }
 
 CBTree BuildCBT(CBTree C)
 {
     BubbleSort(C);
     CBTree R = CreateCBTree();
-    int Root = 0;
-    int Lenth = C->Size + 1;
-    int LeftLenth = LeftSize(Lenth);
-    Root += LeftLenth;
-    int RightLenth = Lenth - 1 - LeftLenth;
+    MakeCBTree(C, R, 0, C->Size, 0);
+    R->Size = C->Size;
+    return R;
+}
+
+void LevelOrderTraversal(CBTree C)
+{
+    int flag = 0;
+    for (int i = 0; i <= C->Size; i++)
+    {
+        if (!flag)
+        {
+            flag = 1;
+        }
+        else
+        {
+            printf(" ");
+        }
+        printf("%d", C->Elements[i]);
+    }
+    // printf("\n");
 }
 
 int main()
 {
-    // printf("%d", LeftSize(8));
+    CBTree C, R;
+    C = ReadTree();
+    // BubbleSort(C);
+    // LevelOrderTraversal(C);
+    R = BuildCBT(C);
+    LevelOrderTraversal(R);
     return 0;
 }
