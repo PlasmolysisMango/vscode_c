@@ -47,7 +47,7 @@ void BubbleSort(CBTree C)
     ElementType temp;
     for (int i = 0; i < C->Size; i++)
     {
-        for (int j = i; j < C->Size; j++)
+        for (int j = 0; j < C->Size - i; j++)
         {
             if (C->Elements[j] > C->Elements[j + 1])
             {
