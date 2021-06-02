@@ -66,10 +66,12 @@ void InsertConnection(Set S, ComputerType A, ComputerType B)
         {
             if (S->Elements[IndexA].Parent > S->Elements[IndexB].Parent)
             {
+                S->Elements[IndexB].Parent += S->Elements[IndexA].Parent;
                 S->Elements[IndexA].Parent = IndexB;
             }
             else
             {
+                S->Elements[IndexA].Parent += S->Elements[IndexB].Parent;
                 S->Elements[IndexB].Parent = IndexA;
             }
         }
@@ -78,11 +80,13 @@ void InsertConnection(Set S, ComputerType A, ComputerType B)
     {
         S->Elements[++S->Size].Data = B;
         S->Elements[S->Size].Parent = IndexA;
+        S->Elements[IndexA].Parent--;
     }
     else if (IndexB >= 0)
     {
         S->Elements[++S->Size].Data = A;
         S->Elements[S->Size].Parent = IndexB;
+        S->Elements[IndexB].Parent--;
     }
     return;
 }
