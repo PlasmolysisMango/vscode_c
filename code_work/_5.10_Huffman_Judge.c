@@ -11,6 +11,7 @@
 
 typedef struct TreeNode //用于存储Huffman树
 {
+    Frequence Data;
     struct TreeNode *Left;
     struct TreeNode *Right;
 } *HuffmanTree;
@@ -31,10 +32,53 @@ MinHeap CreateHeap()
     return H;
 }
 
+void Insert(MinHeap H, Frequence X)
+{
+    int i = ++H->Size;
+    for (; H->Freq[i / 2] > H->Freq[i]; i /= 2)
+    {
+    };
+    H->Freq[i] = X;
+}
+
+Frequence DeleteMin(MinHeap H)
+{
+    int Parent, Child;
+    Frequence temp = H->Freq[H->Size--], min = H->Freq[1];
+    for (Parent = 1; Parent * 2 <= H->Size; Parent = Child)
+    {
+        Child = Parent * 2;
+        if (Child != H->Size && H->Freq[Child] > H->Freq[Child + 1])
+        {
+            Child++;
+        }
+        if (H->Freq[Child] < temp)
+        {
+            H->Freq[Parent] = H->Freq[Child];
+        }
+        else
+        {
+            break;
+        }
+    }
+    H->Freq[Parent] = temp;
+    return min;
+}
+
 HuffmanTree NewNode()
 {
     HuffmanTree newnode = malloc(sizeof(struct TreeNode));
     newnode->Left = newnode->Right = NULL;
+    newnode->Data = -1;
     return newnode;
 }
 
+HuffmanTree BuildTree(MinHeap H)
+{
+    HuffmanTree T = NewNode();
+    while (H->Size)
+    {
+        HuffmanTree tmpnode = NewNode();
+
+    }
+}
