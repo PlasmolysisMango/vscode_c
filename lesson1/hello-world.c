@@ -13,8 +13,7 @@ int main()
                    "Sara Ali",
     };
     printf("%s\n", names[2]); //%s 接受一个char *变量，其指向需要输出的字符数组
-    // swap(&a, &b);
-    return 0;
+    swap(&a, &b);
 }
 
 void swap(int *a, int *b) // *a为变量的值，a为变量的地址。
@@ -22,3 +21,4 @@ void swap(int *a, int *b) // *a为变量的值，a为变量的地址。
     printf("%d, %d", *a, *b);
     return;
 }
+

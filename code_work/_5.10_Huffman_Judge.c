@@ -1,3 +1,7 @@
+/* 1. WPL最小，即与哈夫曼树的WPL相同；
+   2. 满足前缀码；
+   3. 无度为1的结点（满足1、2自动满足）；
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,24 +15,20 @@ typedef struct TreeNode //用于存储Huffman树
     struct TreeNode *Right;
 } *HuffmanTree;
 
-typedef char Code[MaxLenth + 1]; //用于读入Huffman编码
-
 typedef int Frequence; //用于存储字符出现的频率
 
-void BubbleSort(Frequence *F, int N) //用于排序频率序列
+typedef struct HeapNode
 {
-    for (int i = 0; i < N - 1; i++)
-    {
-        for (int j = 0; j < N - i - 1; j++)
-        {
-            if (F[j] < F[j + 1])
-            {
-                int temp = F[j];
-                F[j] = F[j + 1];
-                F[j + 1] = temp;
-            }
-        }
-    }
+    Frequence *Freq;
+    int Size;
+} * MinHeap;
+
+MinHeap CreateHeap()
+{
+    MinHeap H = malloc(sizeof(struct HeapNode));
+    H->Freq = malloc((MaxLenth + 1) * sizeof(Frequence));
+    H->Freq[0] = H->Size = -1;
+    return H;
 }
 
 HuffmanTree NewNode()
