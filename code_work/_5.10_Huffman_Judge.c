@@ -78,7 +78,21 @@ HuffmanTree BuildTree(MinHeap H)
     HuffmanTree T = NewNode();
     while (H->Size)
     {
-        HuffmanTree tmpnode = NewNode();
+        HuffmanTree tmpnode1 = NewNode(), tmpnode2 = NewNode();
+        tmpnode1->Data = DeleteMin(H);
+        tmpnode2->Data = DeleteMin(H);
+        T->Left = tmpnode1;
+        T->Right = tmpnode2;
+        Insert(H, tmpnode1->Data + tmpnode2->Data);
+    }
+    return T;
+}
 
+int WPL(HuffmanTree H, int Depth) //Depth为当前结点的深度
+{
+    // 初始值 (H, 0);
+    if (!H->Left && !H->Right)
+    {
+        
     }
 }
