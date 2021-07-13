@@ -139,23 +139,23 @@ BinTree Delete(BinTree BST, ElementType X)
     BinTree tmpnode;
     if (!BST)
     {
-        printf("未找到元素！\n");
+        printf("Not Found\n");
     }
     else if (X > BST->Data)
     {
-        return Delete(X, BST->Right);
+        BST->Right = Delete(BST->Right, X);
     }
     else if (X < BST->Data)
     {
-        return Delete(X, BST->Left);
+        BST->Left = Delete(BST->Left, X);
     }
     else
     {
         if (BST->Left && BST->Right)
         {
-            tmpnode = IterFindMin(BST->Right);
+            tmpnode = FindMin(BST->Right);
             BST->Data = tmpnode->Data;
-            BST->Right = Delete(BST->Data, BST->Right);
+            BST->Right = Delete(BST->Right, BST->Data);
         }
         else
         {

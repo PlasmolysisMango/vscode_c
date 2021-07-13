@@ -121,7 +121,7 @@ MinHeap ReadHeap(Frequence *F, int N)
 
 void FreeTree(HuffmanTree T)
 {
-    if (!T)
+    if (T)
     {
         FreeTree(T->Left);
         FreeTree(T->Right);
@@ -135,11 +135,6 @@ int JudgePrefix(HuffmanTree T, char *s, Frequence X)
     int judge = 1;
     for (int i = 0; i < L; i++)
     {
-        if (T->Data != -1)
-        {
-            judge = 0;
-            break;
-        }
         if (s[i] == '0')
         {
             if (!T->Left)
@@ -155,6 +150,11 @@ int JudgePrefix(HuffmanTree T, char *s, Frequence X)
                 T->Right = NewNode();
             }
             T = T->Right;
+        }
+        if (T->Data != -1)
+        {
+            judge = 0;
+            break;
         }
         if (i == L - 1)
         {
