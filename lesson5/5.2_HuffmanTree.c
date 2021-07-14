@@ -128,7 +128,7 @@ HuffmanTree Huffman(MinHeap H)
     int i, N = H->Size;
     HuffmanTree T;
     BuildMinHeap(H);
-    for (i = 1; i < N; i++)
+    for (i = 1; i < N; i++) //N - 1次循环
     {
         T = NewElement();
         T->Left = DeleteMin(H);
