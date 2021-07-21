@@ -17,8 +17,8 @@ Queue CreateQueue()
 {
     Queue PtrQ;
     PtrQ = (Queue)malloc(sizeof(struct QNode));
-    PtrQ->front = -1;
-    PtrQ->rear = -1;
+    PtrQ->front = 0; // 保证只存储N-1个元素
+    PtrQ->rear = 0;
     return PtrQ;
 }
 
